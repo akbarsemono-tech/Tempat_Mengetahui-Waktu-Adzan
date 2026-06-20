@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Sholat Hari Ini</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lexend', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+        button {
+            background: #ff7e5f;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+        }
+        button:hover { background: #feb47b; transform: scale(1.05); }
+        #result { margin-top: 20px; text-align: left; }
+        .jadwal-item {
+            background: rgba(255, 255, 255, 0.2);
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Jadwal Sholat</h2>
+    <p>Klik tombol di bawah untuk melihat jadwal hari ini (Jakarta):</p>
+    <button onclick="getJadwal()">Cek Jadwal</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    async function getJadwal() {
+        const resultDiv = document.getElementById('result');
+        resultDiv.innerHTML = "Memuat...";
+
+        try {
+            // Mengambil data dari API Aladhan untuk wilayah Jakarta
+            const response = await fetch('https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=11');
+            const data = await response.json();
+            const timings = data.data.timings;
+            
+            // Pilih sholat yang ingin ditampilkan
+            const sholatList = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            
+            let html = "<h3>Waktu Adzan:</h3>";
+            sholatList.forEach(nama => {
+                html += `<div class="jadwal-item">
+                            <span>${nama}</span>
+                            <span><strong>${timings[nama]}</strong></span>
+                         </div>`;
+            });
+            
+            resultDiv.innerHTML = html;
+        } catch (error) {
+            resultDiv.innerHTML = "Gagal mengambil data. Coba lagi nanti.";
+        }
+    }
+</script>
+
+</body>
+  </html>
+  
